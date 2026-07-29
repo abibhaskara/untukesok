@@ -118,6 +118,7 @@ export default function ProgramDetail() {
   }
 
   const percentFilled = Math.min(Math.round((program.volunteersJoined / program.volunteersTarget) * 100), 100);
+  const daysLeft = calculateDaysLeftGMT8(program);
 
   return (
     <div className="home-content">
@@ -273,7 +274,7 @@ export default function ProgramDetail() {
               src={getValidImageUrl(program.imageUrl)} 
               alt={program.title} 
               fill
-              style={{ objectFit: 'cover' }} 
+              style={{ objectFit: 'cover', filter: daysLeft < 0 ? 'grayscale(100%)' : 'none' }} 
             />
 
             {/* Favorite Floating Button (Bottom-Right) */}
@@ -359,7 +360,7 @@ export default function ProgramDetail() {
               }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', opacity: 0.6 }}>
-              <span>⏱ Batas Waktu: {calculateDaysLeftGMT8(program)} Hari lagi</span>
+              <span>⏱ Batas Waktu: {daysLeft < 0 ? 'Selesai' : `${daysLeft} Hari lagi`}</span>
               <span>{percentFilled}% Terisi</span>
             </div>
           </motion.div>
@@ -456,7 +457,7 @@ export default function ProgramDetail() {
 
           <button
             onClick={handleApply}
-            disabled={isApplying}
+            disabled={isApplying || daysLeft < 0}
             className="btn-primary"
             style={{
               flex: 1,
@@ -468,9 +469,10 @@ export default function ProgramDetail() {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              opacity: isApplying ? 0.6 : 1,
-              cursor: isApplying ? 'not-allowed' : 'pointer',
-              background: hasApplied ? '#10b981' : 'var(--primary)'
+              opacity: (isApplying || daysLeft < 0) ? 0.6 : 1,
+              cursor: (isApplying || daysLeft < 0) ? 'not-allowed' : 'pointer',
+              background: hasApplied ? '#10b981' : (daysLeft < 0 ? 'var(--card-border)' : 'var(--primary)'),
+              color: daysLeft < 0 ? 'var(--text)' : 'white'
             }}
           >
             {hasApplied ? (
@@ -479,6 +481,10 @@ export default function ProgramDetail() {
               </>
             ) : isApplying ? (
               'Memproses...'
+            ) : daysLeft < 0 ? (
+              <>
+                <FiCheck size={18} /> Selesai
+              </>
             ) : (
               <>
                 <FiCheck size={18} /> Jadi Relawan

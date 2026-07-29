@@ -306,6 +306,7 @@ export default function Programs() {
             <div className="programs-grid">
               {filteredPrograms.map(program => {
                 const percent = Math.min(Math.round((program.volunteersJoined / program.volunteersTarget) * 100), 100);
+                const daysLeft = calculateDaysLeftGMT8(program);
 
                 return (
                   <motion.div 
@@ -327,7 +328,7 @@ export default function Programs() {
                       src={getValidImageUrl(program.imageUrl)} 
                       alt={program.title} 
                       fill
-                      style={{ objectFit: 'cover', zIndex: 0 }}
+                      style={{ objectFit: 'cover', zIndex: 0, filter: daysLeft < 0 ? 'grayscale(100%)' : 'none' }}
                     />
 
                     {/* Gradient Overlay */}
@@ -355,7 +356,11 @@ export default function Programs() {
                       zIndex: 2,
                       boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                     }}>
-                      <FiClock size={12} /> {calculateDaysLeftGMT8(program)} Hari Lagi
+                      {daysLeft < 0 ? (
+                        <span>Selesai</span>
+                      ) : (
+                        <><FiClock size={12} /> {daysLeft} Hari Lagi</>
+                      )}
                     </div>
 
                     <div style={{

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getCachedNews, getCachedPrograms } from '../src/lib/dataService';
+import { calculateDaysLeftGMT8 } from '../src/lib/dateUtils';
 
 const getValidImageUrl = (url) => {
   if (!url) return 'https://picsum.photos/seed/fallback/800/600';
@@ -410,7 +411,9 @@ export default function Home() {
           className="main-content"
         >
           <div style={{ marginBottom: '48px' }}>
-            {recentPrograms.map((program, index) => (
+            {recentPrograms.map((program, index) => {
+              const daysLeft = calculateDaysLeftGMT8(program);
+              return (
               <motion.div
                 key={program.id}
                 className={`program-row ${index % 2 !== 0 ? 'reverse' : ''}`}
@@ -432,16 +435,16 @@ export default function Home() {
                   </p>
                   <div>
                     <button onClick={() => router.push('/programs/' + program.id)} className="program-explore-btn">
-                      Detail & Daftar
+                      {daysLeft < 0 ? 'Selesai' : 'Detail & Daftar'}
                     </button>
                   </div>
                 </div>
 
                 <div className="program-row-image" style={{ position: 'relative', minHeight: '300px', flex: 1 }}>
-                  <Image src={getValidImageUrl(program.imageUrl)} alt={program.title} fill style={{ objectFit: 'cover', borderRadius: '24px' }} />
+                  <Image src={getValidImageUrl(program.imageUrl)} alt={program.title} fill style={{ objectFit: 'cover', borderRadius: '24px', filter: daysLeft < 0 ? 'grayscale(100%)' : 'none' }} />
                 </div>
               </motion.div>
-            ))}
+            )})}
           </div>
         </motion.div>
       </section>

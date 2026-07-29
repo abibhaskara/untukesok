@@ -18,9 +18,11 @@
     "react-icons": "^5.4.0"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@types/node": "^22.10.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "oxlint": "^1.71.0"
+    "oxlint": "^1.71.0",
+    "wrangler": "^4.115.0"
   }
 }

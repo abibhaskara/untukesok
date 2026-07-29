@@ -47,6 +47,43 @@ export default function Account() {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [cancelingApp, setCancelingApp] = useState(null);
   const [cancelReason, setCancelReason] = useState('');
+
+  // Profile Edit State
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  
+  // Prompt edit profile if no display name
+  useEffect(() => {
+    if (user && !loading) {
+      if (!user.displayName) {
+        setShowEditProfile(true);
+      }
+      setEditName(user.displayName || '');
+      setEditPhone('');
+    }
+  }, [user, loading]);
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    if (!editName.trim()) return;
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: editName
+      });
+      const updateData = { name: editName };
+      if (editPhone.trim()) {
+        const fullPhone = '62' + editPhone.replace(/^0/, '');
+        updateData.phone = fullPhone;
+      }
+      await setDoc(doc(db, 'users', user.uid), updateData, { merge: true });
+      setShowEditProfile(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Gagal memperbarui profil");
+    }
+  };
   
   // Fetch applied programs
   useEffect(() => {
@@ -229,7 +266,16 @@ export default function Account() {
               <p>Memuat profil...</p>
             </div>
           ) : !user ? (
-            <motion.div variants={itemVariants} style={{ maxWidth: '400px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+            <motion.div variants={itemVariants} style={{ 
+              maxWidth: '400px', 
+              margin: '0 auto', 
+              padding: '32px', 
+              textAlign: 'center',
+              background: 'var(--card-bg)',
+              borderRadius: '24px',
+              border: '1px solid var(--card-border)',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.06)'
+            }}>
               <h2 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '8px' }}>
                 {isRegistering ? 'Daftar Akun' : 'Masuk Akun'}
               </h2>
@@ -335,52 +381,73 @@ export default function Account() {
             </motion.div>
           ) : (
             <>
-              {/* ── PROFILE HEADER CARD (PEDULY STYLE) ── */}
+              {/* ── PROFILE HEADER CARD ── */}
               <motion.div variants={itemVariants} className="account-profile-card" style={{
                 background: 'var(--card-bg)',
                 border: '1px solid var(--card-border)',
                 borderRadius: '24px',
-                padding: '24px',
+                padding: '20px',
                 marginBottom: '24px',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                position: 'relative'
               }}>
-                <div className="account-profile-avatar" style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  background: 'var(--primary)',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 800,
-                  fontSize: '22px',
-                  fontFamily: 'var(--font-poppins)',
-                  flexShrink: 0,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                  overflow: 'hidden'
-                }}>
-                  {user.photoURL ? (
-                    <img src={user.photoURL} alt={user.displayName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    getInitials(user.displayName || user.email)
-                  )}
-                </div>
+                {/* Top row: avatar + name/email + edit button */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  {/* Avatar */}
+                  <div className="account-profile-avatar" style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '50%',
+                    background: 'var(--primary)',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 800,
+                    fontSize: '20px',
+                    fontFamily: 'var(--font-poppins)',
+                    flexShrink: 0,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    overflow: 'hidden'
+                  }}>
+                    {user.photoURL ? (
+                      <img src={user.photoURL} alt={user.displayName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      getInitials(user.displayName || user.email)
+                    )}
+                  </div>
 
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <h2 className="account-profile-name" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-bold)', margin: 0, fontFamily: 'var(--font-poppins)' }}>
-                      {user.displayName || 'Relawan'}
-                    </h2>
-                    <span style={{ background: '#dcfce7', color: '#166534', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px' }}>
+                  {/* Name + email */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px', marginBottom: '4px' }}>
+                      <h2 className="account-profile-name" style={{ fontSize: '17px', fontWeight: 800, color: 'var(--text-bold)', margin: 0, fontFamily: 'var(--font-poppins)', lineHeight: 1.3, wordBreak: 'break-word' }}>
+                        {user.displayName || 'Relawan'}
+                      </h2>
+                      {/* Edit button — inline, no absolute */}
+                      <button
+                        onClick={() => setShowEditProfile(true)}
+                        style={{
+                          flexShrink: 0,
+                          background: 'transparent',
+                          border: '1px solid var(--card-border)',
+                          borderRadius: '8px',
+                          padding: '5px 10px',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          color: 'var(--text)'
+                        }}
+                      >
+                        <FiSettings size={13} /> Edit
+                      </button>
+                    </div>
+                    <span style={{ background: '#dcfce7', color: '#166534', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px', display: 'inline-block', marginBottom: '6px' }}>
                       Relawan Aktif
                     </span>
+                    <p style={{ fontSize: '12px', opacity: 0.6, margin: 0, wordBreak: 'break-all' }}>{user.email}</p>
                   </div>
-                  <p style={{ fontSize: '13px', opacity: 0.6, margin: 0 }}>{user.email}</p>
                 </div>
               </motion.div>
 
@@ -746,6 +813,94 @@ export default function Account() {
                   <FiLogOut size={18} /> Keluar dari Akun
                 </button>
               </motion.div>
+
+              {/* Edit Profile Modal */}
+              <AnimatePresence>
+                {showEditProfile && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{
+                      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+                      zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      padding: '20px'
+                    }}
+                  >
+                    <motion.div 
+                      initial={{ scale: 0.95 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0.95 }}
+                      style={{
+                        background: 'white',
+                        borderRadius: '24px',
+                        padding: '24px',
+                        maxWidth: '400px',
+                        width: '100%',
+                        textAlign: 'center',
+                        boxShadow: '0 20px 60px rgba(0,0,0,0.2)'
+                      }}
+                    >
+                      <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px', color: '#111' }}>Lengkapi Profil Anda</h2>
+                      <div style={{ background: '#eff6ff', color: '#1d4ed8', padding: '12px', borderRadius: '12px', fontSize: '13px', marginBottom: '20px', textAlign: 'left', lineHeight: '1.5' }}>
+                        <FiCheckCircle style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                        Dianjurkan menggunakan <strong>nama lengkap asli</strong> untuk keperluan pembuatan sertifikat digital dan dokumentasi.
+                      </div>
+                      
+                      <form onSubmit={handleUpdateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                        {/* Nama Lengkap */}
+                        <div style={{ textAlign: 'left' }}>
+                          <label style={{ fontSize: '11px', fontWeight: 700, opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '6px', color: '#111' }}>Nama Lengkap</label>
+                          <input 
+                            type="text" 
+                            placeholder="Contoh: Made Krisnayasa Putra" 
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            style={{ width: '100%', padding: '13px 14px', borderRadius: '12px', border: '1.5px solid #e5e7eb', background: '#f9fafb', color: '#111', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
+                            required
+                          />
+                        </div>
+
+                        {/* Nomor WhatsApp */}
+                        <div style={{ textAlign: 'left' }}>
+                          <label style={{ fontSize: '11px', fontWeight: 700, opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '6px', color: '#111' }}>Nomor WhatsApp <span style={{ fontWeight: 400, opacity: 0.6 }}>(opsional)</span></label>
+                          <div style={{ display: 'flex', borderRadius: '12px', border: '1.5px solid #e5e7eb', overflow: 'hidden', background: '#f9fafb' }}>
+                            <div style={{ padding: '13px 12px', background: '#f0f0f0', borderRight: '1.5px solid #e5e7eb', fontSize: '14px', fontWeight: 700, color: '#444', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                              🇮🇩 +62
+                            </div>
+                            <input 
+                              type="tel" 
+                              placeholder="8123456789" 
+                              value={editPhone}
+                              onChange={(e) => setEditPhone(e.target.value.replace(/^0/, ''))}
+                              style={{ flex: 1, padding: '13px 14px', border: 'none', background: 'transparent', color: '#111', fontSize: '14px', outline: 'none', minWidth: 0 }}
+                            />
+                          </div>
+                          <p style={{ fontSize: '11px', opacity: 0.5, margin: '4px 0 0 2px', color: '#111' }}>Tanpa angka 0 di depan. Contoh: 81234567890</p>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
+                          {user.displayName && (
+                            <button 
+                              type="button"
+                              onClick={() => setShowEditProfile(false)}
+                              style={{ flex: 1, padding: '14px', borderRadius: '12px', border: '1.5px solid #e5e7eb', background: 'transparent', fontWeight: 600, cursor: 'pointer', color: '#111' }}
+                            >
+                              Batal
+                            </button>
+                          )}
+                          <button 
+                            type="submit"
+                            style={{ flex: 1, padding: '14px', borderRadius: '12px', border: 'none', background: 'var(--primary)', color: 'white', fontWeight: 600, cursor: 'pointer' }}
+                          >
+                            Simpan Profil
+                          </button>
+                        </div>
+                      </form>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Logout Confirmation Modal */}
               <AnimatePresence>

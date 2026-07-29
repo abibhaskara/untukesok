@@ -72,6 +72,7 @@ export default function Home() {
   const router = useRouter();
   const [newsList, setNewsList] = useState([]);
   const [recentPrograms, setRecentPrograms] = useState([]);
+  const [allPrograms, setAllPrograms] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +82,7 @@ export default function Home() {
           getCachedPrograms()
         ]);
         setNewsList(newsData.slice(0, 5));
+        setAllPrograms(programsData);
         setRecentPrograms(programsData.slice(0, 1));
       } catch (error) {
         console.error("Error fetching data for homepage:", error);
@@ -320,21 +322,21 @@ export default function Home() {
             <div className="grid-layout">
               <motion.div className="card col-4" variants={itemVariants} style={{ textAlign: 'center', background: 'transparent', border: 'none', boxShadow: 'none' }}>
                 <h3 className="stats-number" style={{ fontSize: '48px', color: 'var(--primary)', marginBottom: '8px' }}>
-                  <AnimatedCounter to={15} />
+                  <AnimatedCounter to={allPrograms.length || 3} suffix="+" />
                 </h3>
-                <p style={{ fontWeight: '600' }}>Proyek Aktif</p>
+                <p style={{ fontWeight: '600' }}>Program Kerja</p>
               </motion.div>
               <motion.div className="card col-4" variants={itemVariants} style={{ textAlign: 'center', background: 'transparent', border: 'none', boxShadow: 'none' }}>
                 <h3 className="stats-number" style={{ fontSize: '48px', color: 'var(--accent)', marginBottom: '8px' }}>
-                  <AnimatedCounter to={120} />
+                  <AnimatedCounter to={100} suffix="+" />
                 </h3>
                 <p style={{ fontWeight: '600' }}>Relawan Terdaftar</p>
               </motion.div>
               <motion.div className="card col-4" variants={itemVariants} style={{ textAlign: 'center', background: 'transparent', border: 'none', boxShadow: 'none' }}>
                 <h3 className="stats-number" style={{ fontSize: '48px', color: 'var(--primary)', marginBottom: '8px' }}>
-                  <AnimatedCounter to={500} />
+                  <AnimatedCounter to={100} suffix="+" />
                 </h3>
-                <p style={{ fontWeight: '600' }}>Siswa Penerima Manfaat</p>
+                <p style={{ fontWeight: '600' }}>Siswa Berkontribusi</p>
               </motion.div>
             </div>
           </section>
@@ -440,7 +442,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="program-row-image" style={{ position: 'relative', minHeight: '300px', flex: 1 }}>
+                <div className="program-row-image program-row-image--fullbleed" style={{ position: 'relative', minHeight: '300px', flex: 1 }}>
                   <Image src={getValidImageUrl(program.imageUrl)} alt={program.title} fill style={{ objectFit: 'cover', borderRadius: '24px', filter: daysLeft < 0 ? 'grayscale(100%)' : 'none' }} />
                 </div>
               </motion.div>

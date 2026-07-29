@@ -276,62 +276,26 @@ export default function ProgramDetail() {
               fill
               style={{ objectFit: 'cover', filter: daysLeft < 0 ? 'grayscale(100%)' : 'none' }} 
             />
-
-            {/* Favorite Floating Button (Bottom-Right) */}
-            <button
-              onClick={() => setIsFavorited(!isFavorited)}
-              style={{
-                position: 'absolute',
-                bottom: '16px',
-                right: '16px',
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                background: '#ffffff',
-                border: 'none',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease'
-              }}
-              aria-label="Simpan Favorit"
-            >
-              <FiHeart size={20} style={{ color: isFavorited ? '#ef4444' : '#64748b', fill: isFavorited ? '#ef4444' : 'none' }} />
-            </button>
           </motion.div>
 
-          {/* ── ORGANIZATOR CARD ── */}
-          <motion.div variants={itemVariants} style={{
-            background: 'var(--card-bg)',
+          {/* ── CREATOR / ORGANIZER CARD ── */}
+          <motion.div variants={itemVariants} style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '12px', 
+            padding: '12px 16px', 
+            background: '#ffffff', 
+            borderRadius: '12px', 
             border: '1px solid var(--card-border)',
-            borderRadius: '16px',
-            padding: '16px 20px',
-            marginBottom: '28px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px'
+            marginBottom: '20px'
           }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              background: 'var(--primary)',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              fontSize: '18px',
-              flexShrink: 0
-            }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 800 }}>
               UE
             </div>
-            <div>
-              <p style={{ fontSize: '11px', opacity: 0.6, marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dibuat oleh:</p>
-              <h4 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-bold)', margin: 0 }}>Untuk Esok Organization</h4>
-              <p style={{ fontSize: '12px', opacity: 0.6 }}>Organisasi Non-Profit Pendidikan & Kebudayaan</p>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: '9px', fontWeight: 700, opacity: 0.5, margin: '0 0 2px 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>DIBUAT OLEH:</p>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 2px 0', color: 'var(--text-bold)' }}>Untuk Esok Organization</h3>
+              <p style={{ fontSize: '11px', opacity: 0.6, margin: 0 }}>Organisasi Non-Profit Pendidikan & Kebudayaan</p>
             </div>
           </motion.div>
 
@@ -354,7 +318,7 @@ export default function ProgramDetail() {
               <div style={{
                 height: '100%',
                 width: `${percentFilled}%`,
-                background: 'linear-gradient(to right, var(--primary), var(--accent))',
+                background: '#FFBD59',
                 borderRadius: '999px',
                 transition: 'width 0.5s ease'
               }} />
@@ -375,7 +339,7 @@ export default function ProgramDetail() {
 
           <motion.div variants={itemVariants} style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid var(--card-border)' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '16px', color: 'var(--text-bold)' }}>Informasi Utama</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+            <div className="program-info-grid">
               <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
                 <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Kategori</p>
                 <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.category || "Pendidikan"}</p>
@@ -388,7 +352,7 @@ export default function ProgramDetail() {
                 <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Tanggal Kegiatan</p>
                 <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.date}</p>
               </div>
-              <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
+              <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)', gridColumn: '1 / -1' }}>
                 <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Lokasi Utama</p>
                 <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.location}</p>
               </div>

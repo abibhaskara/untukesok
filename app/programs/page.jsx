@@ -76,7 +76,12 @@ export default function Programs() {
       return matchesSearch && matchesCategory && matchesUrgent;
     }).sort((a, b) => {
       if (sortOption === 'BatasWaktu') {
-        return calculateDaysLeftGMT8(a) - calculateDaysLeftGMT8(b);
+        const daysA = calculateDaysLeftGMT8(a);
+        const daysB = calculateDaysLeftGMT8(b);
+        if ((daysA >= 0 && daysB >= 0) || (daysA < 0 && daysB < 0)) {
+          return daysA - daysB;
+        }
+        return daysA >= 0 ? -1 : 1;
       }
       if (sortOption === 'KuotaHampirPenuh') {
         const ratioA = a.volunteersJoined / a.volunteersTarget;

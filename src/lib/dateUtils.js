@@ -75,15 +75,15 @@ export function calculateDaysLeftGMT8(program) {
 
     const timeDiff = targetStart.getTime() - todayStart.getTime();
     const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    return Math.max(0, daysLeft);
+    return daysLeft;
   }
 
   // 3. Fallback to static program.daysLeft if present
   if (typeof program.daysLeft === 'number') {
-    return Math.max(0, program.daysLeft);
+    return program.daysLeft;
   }
 
-  return 0;
+  return -1;
 }
 
 /**

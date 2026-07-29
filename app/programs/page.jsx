@@ -4,10 +4,18 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { FiSearch, FiArrowLeft, FiMapPin, FiClock, FiUsers, FiSliders, FiChevronDown, FiAlertCircle, FiX, FiCheck } from 'react-icons/fi';
-import { programCategories } from '../../src/data/programsData';
 import { getCachedPrograms } from '../../src/lib/dataService';
 import { calculateDaysLeftGMT8 } from '../../src/lib/dateUtils';
 import Image from 'next/image';
+
+export const programCategories = [
+  'Semua',
+  'Pendidikan',
+  'Lingkungan',
+  'Kesehatan',
+  'Sains & Teknologi',
+  'Seni & Budaya',
+];
 
 const getValidImageUrl = (url) => {
   if (!url) return 'https://picsum.photos/seed/fallback/800/600';

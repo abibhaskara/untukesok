@@ -11,8 +11,7 @@ import VisionMissionScroll from '../src/components/VisionMissionScroll';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { programsData } from '../src/data/programsData';
-import { getCachedNews } from '../src/lib/dataService';
+import { getCachedNews, getCachedPrograms } from '../src/lib/dataService';
 
 const getValidImageUrl = (url) => {
   if (!url) return 'https://picsum.photos/seed/fallback/800/600';
@@ -54,8 +53,6 @@ const founders = [
   { name: 'Nalini', role: 'Logistics Head', img: 'https://res.cloudinary.com/dnbgczi9b/image/upload/v1785249953/9_dv6lbv.webp' }
 ];
 
-const recentPrograms = programsData.slice(0, 1);
-
 // --- FADE IN ANIMATION VARIANTS ---
 const containerVariants = {
   hidden: { opacity: 1 },
@@ -73,18 +70,22 @@ const itemVariants = {
 export default function Home() {
   const router = useRouter();
   const [newsList, setNewsList] = useState([]);
+  const [recentPrograms, setRecentPrograms] = useState([]);
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getCachedNews();
-        // Ambil maksimal 5 artikel untuk beranda (1 featured, 4 grid)
-        setNewsList(data.slice(0, 5));
+        const [newsData, programsData] = await Promise.all([
+          getCachedNews(),
+          getCachedPrograms()
+        ]);
+        setNewsList(newsData.slice(0, 5));
+        setRecentPrograms(programsData.slice(0, 1));
       } catch (error) {
-        console.error("Error fetching news for homepage:", error);
+        console.error("Error fetching data for homepage:", error);
       }
     };
-    fetchNews();
+    fetchData();
   }, []);
 
   const [donateForm, setDonateForm] = useState({ name: '', email: '', amount: '250000', customAmount: '' });

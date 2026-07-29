@@ -7,8 +7,6 @@ import { db } from '../../../../src/lib/firebase';
 import { doc, getDoc, getDocs, collection, query, where, addDoc, updateDoc, increment } from 'firebase/firestore';
 import { useAuth } from '../../../../src/context/AuthContext';
 import { getCachedProgramDetail, clearCache } from '../../../../src/lib/dataService';
-import { programsData } from '../../../../src/data/programsData';
-
 export default function InvoicePage() {
   const { id } = useParams();
   const router = useRouter();
@@ -30,9 +28,6 @@ export default function InvoicePage() {
       try {
         // Fetch program detail with fallback
         let progData = await getCachedProgramDetail(id);
-        if (!progData) {
-          progData = programsData.find(p => p.id === id);
-        }
 
         if (isMounted && progData) {
           setProgram(progData);

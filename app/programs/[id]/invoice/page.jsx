@@ -85,6 +85,21 @@ export default function InvoicePage() {
       return;
     }
 
+    // Re-check quota from Firestore to prevent race conditions
+    try {
+      const freshProgDoc = await getDoc(doc(db, 'programs', id));
+      if (freshProgDoc.exists()) {
+        const freshData = freshProgDoc.data();
+        if (freshData.volunteersJoined >= freshData.volunteersTarget) {
+          setProgram(prev => ({ ...prev, volunteersJoined: freshData.volunteersJoined, volunteersTarget: freshData.volunteersTarget }));
+          alert("Maaf, kuota relawan untuk program ini sudah penuh. Pendaftaran ditutup.");
+          return;
+        }
+      }
+    } catch (quotaCheckErr) {
+      console.warn("Error re-checking quota:", quotaCheckErr);
+    }
+
     setIsVerifying(true);
     try {
       let userName = user.displayName || 'Relawan';
@@ -165,6 +180,7 @@ export default function InvoicePage() {
 
   const isAllStepsCompleted = hasUploadedTwibbon && Boolean(igProof);
   const waLink = program.whatsappGroupLink || 'https://chat.whatsapp.com/';
+  const isFull = program.volunteersJoined >= program.volunteersTarget;
 
   return (
     <div className="home-content" style={{ paddingBottom: '100px' }}>
@@ -429,6 +445,35 @@ export default function InvoicePage() {
           </div>
         </motion.div>
 
+        {/* QUOTA FULL BANNER */}
+        {isFull && !isVerified && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              marginTop: '24px',
+              padding: '16px 20px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #fee2e2, #fef2f2)',
+              border: '1px solid #fca5a5',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#dc2626'
+            }}
+          >
+            <FiAlertCircle size={22} style={{ flexShrink: 0 }} />
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 700 }}>Kuota Relawan Penuh</p>
+              <p style={{ margin: 0, fontSize: '13px', fontWeight: 500, opacity: 0.85 }}>
+                Maaf, kuota pendaftaran untuk program ini sudah penuh. Pendaftaran ditutup secara otomatis.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
         {/* BOTTOM ACTION BUTTON */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -447,24 +492,24 @@ export default function InvoicePage() {
             <>
               <button
                 onClick={handleVerify}
-                disabled={!isAllStepsCompleted || isVerifying}
+                disabled={!isAllStepsCompleted || isVerifying || isFull}
                 style={{
                   width: '100%',
                   padding: '16px',
                   borderRadius: '16px',
-                  background: (!isAllStepsCompleted || isVerifying) ? '#cbd5e1' : 'var(--primary)',
+                  background: (!isAllStepsCompleted || isVerifying || isFull) ? '#cbd5e1' : 'var(--primary)',
                   border: 'none',
                   color: 'white',
                   fontWeight: 700,
-                  cursor: (!isAllStepsCompleted || isVerifying) ? 'not-allowed' : 'pointer',
+                  cursor: (!isAllStepsCompleted || isVerifying || isFull) ? 'not-allowed' : 'pointer',
                   fontSize: '16px',
-                  boxShadow: isAllStepsCompleted ? '0 6px 20px rgba(0,0,0,0.15)' : 'none',
+                  boxShadow: (isAllStepsCompleted && !isFull) ? '0 6px 20px rgba(0,0,0,0.15)' : 'none',
                   transition: 'all 0.3s ease'
                 }}
               >
-                {isVerifying ? 'Memverifikasi Pendaftaran...' : 'Verifikasi'}
+                {isFull ? 'Kuota Penuh — Pendaftaran Ditutup' : isVerifying ? 'Memverifikasi Pendaftaran...' : 'Verifikasi'}
               </button>
-              {!isAllStepsCompleted && (
+              {!isAllStepsCompleted && !isFull && (
                 <p style={{ fontSize: '12px', color: '#ef4444', marginTop: '10px', fontWeight: 600 }}>
                   * Harap selesaikan Step 1 (Upload Twibbon) dan Step 2 (Unggah Bukti Follow IG) untuk mengaktifkan tombol Verifikasi.
                 </p>

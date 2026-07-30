@@ -90,6 +90,12 @@ export default function ProgramDetail() {
       router.push('/account');
       return;
     }
+
+    // Block if quota is full
+    if (program.volunteersJoined >= program.volunteersTarget) {
+      alert("Maaf, kuota relawan untuk program ini sudah penuh. Pendaftaran ditutup.");
+      return;
+    }
     
     // Direct user to quest (Status Pendaftaran) page without recording registration yet
     router.push(`/programs/${id}/invoice`);
@@ -119,6 +125,7 @@ export default function ProgramDetail() {
 
   const percentFilled = Math.min(Math.round((program.volunteersJoined / program.volunteersTarget) * 100), 100);
   const daysLeft = calculateDaysLeftGMT8(program);
+  const isFull = program.volunteersJoined >= program.volunteersTarget;
 
   return (
     <div className="home-content">
@@ -327,6 +334,24 @@ export default function ProgramDetail() {
               <span>⏱ Batas Waktu: {daysLeft < 0 ? 'Selesai' : `${daysLeft} Hari lagi`}</span>
               <span>{percentFilled}% Terisi</span>
             </div>
+            {isFull && daysLeft >= 0 && (
+              <div style={{
+                marginTop: '12px',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #fee2e2, #fef2f2)',
+                border: '1px solid #fca5a5',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#dc2626'
+              }}>
+                <FiUsers size={16} />
+                Kuota relawan sudah penuh. Pendaftaran ditutup.
+              </div>
+            )}
           </motion.div>
 
           {/* ── SECTIONS / DETAILS ── */}
@@ -421,7 +446,7 @@ export default function ProgramDetail() {
 
           <button
             onClick={handleApply}
-            disabled={isApplying || daysLeft < 0}
+            disabled={isApplying || daysLeft < 0 || isFull}
             className="btn-primary"
             style={{
               flex: 1,
@@ -433,10 +458,10 @@ export default function ProgramDetail() {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              opacity: (isApplying || daysLeft < 0) ? 0.6 : 1,
-              cursor: (isApplying || daysLeft < 0) ? 'not-allowed' : 'pointer',
-              background: hasApplied ? '#10b981' : (daysLeft < 0 ? 'var(--card-border)' : 'var(--primary)'),
-              color: daysLeft < 0 ? 'var(--text)' : 'white'
+              opacity: (isApplying || daysLeft < 0 || isFull) ? 0.6 : 1,
+              cursor: (isApplying || daysLeft < 0 || isFull) ? 'not-allowed' : 'pointer',
+              background: hasApplied ? '#10b981' : ((daysLeft < 0 || isFull) ? 'var(--card-border)' : 'var(--primary)'),
+              color: (daysLeft < 0 || isFull) ? 'var(--text)' : 'white'
             }}
           >
             {hasApplied ? (
@@ -448,6 +473,10 @@ export default function ProgramDetail() {
             ) : daysLeft < 0 ? (
               <>
                 <FiCheck size={18} /> Selesai
+              </>
+            ) : isFull ? (
+              <>
+                <FiUsers size={18} /> Kuota Penuh
               </>
             ) : (
               <>

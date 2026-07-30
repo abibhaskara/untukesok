@@ -312,6 +312,7 @@ export default function Programs() {
               {filteredPrograms.map(program => {
                 const percent = Math.min(Math.round((program.volunteersJoined / program.volunteersTarget) * 100), 100);
                 const daysLeft = calculateDaysLeftGMT8(program);
+                const isFull = program.volunteersJoined >= program.volunteersTarget;
 
                 return (
                   <motion.div 
@@ -344,27 +345,53 @@ export default function Programs() {
                       zIndex: 1
                     }} />
 
-                    {/* Top Badges (Days Left) */}
+                    {/* Top Badges */}
                     <div style={{
                       position: 'absolute',
                       top: '16px',
                       right: '16px',
-                      background: 'rgba(255,255,255,0.95)',
-                      color: '#111',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      padding: '6px 12px',
-                      borderRadius: '999px',
                       display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      zIndex: 2,
-                      boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                      flexDirection: 'column',
+                      alignItems: 'flex-end',
+                      gap: '6px',
+                      zIndex: 2
                     }}>
-                      {daysLeft < 0 ? (
-                        <span>Selesai</span>
-                      ) : (
-                        <><FiClock size={12} /> {daysLeft} Hari Lagi</>
+                      {/* Days Left Badge */}
+                      <div style={{
+                        background: 'rgba(255,255,255,0.95)',
+                        color: '#111',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        padding: '6px 12px',
+                        borderRadius: '999px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                      }}>
+                        {daysLeft < 0 ? (
+                          <span>Selesai</span>
+                        ) : (
+                          <><FiClock size={12} /> {daysLeft} Hari Lagi</>
+                        )}
+                      </div>
+
+                      {/* Kuota Penuh Badge */}
+                      {isFull && daysLeft >= 0 && (
+                        <div style={{
+                          background: '#ef4444',
+                          color: '#ffffff',
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          padding: '5px 10px',
+                          borderRadius: '999px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          boxShadow: '0 4px 10px rgba(239,68,68,0.3)'
+                        }}>
+                          <FiUsers size={11} /> Kuota Penuh
+                        </div>
                       )}
                     </div>
 

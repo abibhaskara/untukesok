@@ -70,9 +70,8 @@ export default function Programs() {
                             program.description.toLowerCase().includes(searchQuery.toLowerCase());
       
       const matchesCategory = selectedCategory === 'Semua' || program.category === selectedCategory;
-      const matchesUrgent = !onlyUrgent || program.urgent === true;
 
-      return matchesSearch && matchesCategory && matchesUrgent;
+      return matchesSearch && matchesCategory;
     }).sort((a, b) => {
       if (sortOption === 'BatasWaktu') {
         const daysA = calculateDaysLeftGMT8(a);

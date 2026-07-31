@@ -8,6 +8,7 @@ import {
   FiUsers, FiShare2, FiCheckCircle
 } from 'react-icons/fi';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../../src/lib/firebase';
 import { getCachedProgramDetail } from '../../../src/lib/dataService';
 import { calculateDaysLeftGMT8, formatDateDDMMYYYY } from '../../../src/lib/dateUtils';
 import { useAuth } from '../../../src/context/AuthContext';
@@ -65,8 +66,6 @@ export default function ProgramDetail() {
           const activeApp = querySnapshot.docs.find(doc => doc.data().status !== 'Dibatalkan');
           if (activeApp) {
             setHasApplied(true);
-          } else {
-            setExistingCancelAppId(querySnapshot.docs[0].id);
           }
         }
       } catch (error) {
@@ -172,34 +171,7 @@ export default function ProgramDetail() {
 
           {/* Toast Feedback */}
           <AnimatePresence>
-            {applied && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                style={{
-                  position: 'fixed',
-                  top: '74px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: '#10b981',
-                  color: '#ffffff',
-                  padding: '12px 24px',
-                  borderRadius: '999px',
-                  boxShadow: '0 8px 24px rgba(16,185,129,0.3)',
-                  zIndex: 1100,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  fontFamily: 'var(--font-poppins)'
-                }}
-              >
-                <FiCheckCircle size={20} />
-                Pendaftaran Berhasil! Anda terdaftar pada {program.title}.
-              </motion.div>
-            )}
+
 
             {copiedShare && (
               <motion.div 
@@ -224,6 +196,8 @@ export default function ProgramDetail() {
               </motion.div>
             )}
           </AnimatePresence>
+
+
 
           {/* ── TITLE & HEADER META ── */}
           <motion.div variants={itemVariants} style={{ marginBottom: '20px' }}>
@@ -429,7 +403,7 @@ export default function ProgramDetail() {
 
           <button
             onClick={handleApply}
-            disabled={isApplying || daysLeft < 0 || isFull}
+            disabled={daysLeft < 0 || isFull}
             className="btn-primary"
             style={{
               flex: 1,
@@ -441,16 +415,14 @@ export default function ProgramDetail() {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              opacity: (isApplying || daysLeft < 0 || isFull) ? 0.6 : 1,
-              cursor: (isApplying || daysLeft < 0 || isFull) ? 'not-allowed' : 'pointer',
+              opacity: (daysLeft < 0 || isFull) ? 0.6 : 1,
+              cursor: (daysLeft < 0 || isFull) ? 'not-allowed' : 'pointer',
               background: hasApplied ? '#10b981' : ((daysLeft < 0 || isFull) ? 'var(--card-border)' : 'var(--primary)'),
               color: (daysLeft < 0 || isFull) ? 'var(--text)' : 'white'
             }}
           >
             {hasApplied ? (
               'Sudah Terdaftar'
-            ) : isApplying ? (
-              'Memproses...'
             ) : daysLeft < 0 ? (
               'Selesai'
             ) : isFull ? (

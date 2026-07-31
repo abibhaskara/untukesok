@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { FiSearch, FiMapPin, FiClock, FiUsers, FiSliders, FiChevronDown, FiX, FiCheck } from 'react-icons/fi';
@@ -48,7 +48,7 @@ export default function Programs() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch data from Firebase
-  useMemo(() => {
+  useEffect(() => {
     const fetchPrograms = async () => {
       try {
         const data = await getCachedPrograms();

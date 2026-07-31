@@ -3,7 +3,7 @@ export const runtime = 'edge';
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { getCachedNewsDetail } from '../../../src/lib/dataService';
-import { FiArrowLeft, FiCalendar, FiTag } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
 export default function NewsDetail() {
@@ -68,10 +68,10 @@ export default function NewsDetail() {
           </button>
           
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--primary)', color: 'white', padding: '6px 12px', borderRadius: '100px', fontSize: '13px', fontWeight: 700 }}>
-              <FiTag /> {article.category}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'black', fontSize: '13px', fontWeight: 700 }}>
+              {article.category}
             </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.2)', color: 'white', padding: '6px 12px', borderRadius: '100px', fontSize: '13px', fontWeight: 600 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'white', fontSize: '13px', fontWeight: 600 }}>
               <FiCalendar /> {article.date}
             </span>
           </div>

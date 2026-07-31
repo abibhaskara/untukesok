@@ -2,17 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-  FiArrowRight, FiUsers, FiAward, FiBook,
-  FiActivity, FiLayers, FiDollarSign,
+  FiArrowRight,
   FiHeart, FiCheckCircle, FiX
 } from 'react-icons/fi';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import VisionMissionScroll from '../src/components/VisionMissionScroll';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getCachedNews, getCachedPrograms } from '../src/lib/dataService';
-import { calculateDaysLeftGMT8 } from '../src/lib/dateUtils';
+import { calculateDaysLeftGMT8, formatDateDDMMYYYY } from '../src/lib/dateUtils';
 
 const getValidImageUrl = (url) => {
   if (!url) return 'https://picsum.photos/seed/fallback/800/600';
@@ -102,7 +100,6 @@ export default function Home() {
   const missionRef = useRef(null);
 
   const { scrollY } = useScroll();
-  const heroBgY = useTransform(scrollY, [0, 1000], [0, 400]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -159,11 +156,11 @@ export default function Home() {
 
       if (window.snap) {
         window.snap.pay(data.token, {
-          onSuccess: function (result) {
+          onSuccess: function () {
             setIsDonateSubmitted(true);
             setIsSubmitting(false);
           },
-          onPending: function (result) {
+          onPending: function () {
             alert('Payment pending. Please complete your payment.');
             setIsSubmitting(false);
           },
@@ -426,7 +423,7 @@ export default function Home() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '12px', marginBottom: '16px' }}>
                     <div style={{ height: '1px', width: '30px', background: 'var(--primary)' }}></div>
                     <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.8 }}>
-                      PROGRAM • {program.date}
+                      PROGRAM • {formatDateDDMMYYYY(program.date)}
                     </span>
                   </div>
                   <h2 className="serif-title text-h3" style={{ fontSize: '32px', marginBottom: '16px', lineHeight: '1.2' }}>

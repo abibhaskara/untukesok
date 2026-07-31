@@ -3,6 +3,7 @@ import Navbar from '../src/components/Navbar';
 import Footer from '../src/components/Footer';
 import { AuthProvider } from '../src/context/AuthContext';
 
+// eslint-disable-next-line react/only-export-components
 export const metadata = {
   title: 'Untuk Esok — Pemberdayaan & Kreativitas Manusia',
   description: 'Organisasi non-pemerintah yang dipimpin oleh mahasiswa dengan fokus pada pemberdayaan masyarakat lokal melalui pendidikan yang mudah diakses dan teknologi kolaboratif.',

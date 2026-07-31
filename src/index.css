@@ -1204,9 +1204,55 @@ body.dark .program-row-image::before {
   gap: 16px;
 }
 
+.program-info-card {
+  background: var(--card-bg);
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.program-info-card-label {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+}
+
+.program-info-card-value {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+}
+
 @media (max-width: 600px) {
   .program-info-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .program-info-card {
+    padding: 10px 8px;
+  }
+  .program-info-card-label {
+    font-size: 9px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .program-info-card-value {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

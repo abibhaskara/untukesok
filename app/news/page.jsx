@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { FiArrowLeft } from 'react-icons/fi';
 import { getCachedNews } from '../../src/lib/dataService';
 import { useState, useEffect } from 'react';
 

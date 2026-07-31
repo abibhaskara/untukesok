@@ -119,3 +119,71 @@ export function calculateProgramDeadlineAndDaysLeft(eventDateStr) {
     daysLeft
   };
 }
+
+/**
+ * Formats a date string (e.g. YYYY-MM-DD) to DD/MM/YYYY.
+ * @param {string} dateStr
+ * @returns {string}
+ */
+export function formatDateDDMMYYYY(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return dateStr || '';
+  const trimmed = dateStr.trim();
+  const ymdMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (ymdMatch) {
+    const [, year, month, day] = ymdMatch;
+    return `${day}/${month}/${year}`;
+  }
+  return trimmed;
+}
+
+/**
+ * Calculates duration in hours between startTime and endTime (e.g. "10:00" and "12:00" -> 2).
+ * Fallback to defaultHours (2) if not specified or invalid.
+ */
+export function calculateProgramDurationHours(program, defaultHours = 2) {
+  if (!program) return defaultHours;
+  if (typeof program.durationHours === 'number' && program.durationHours > 0) {
+    return program.durationHours;
+  }
+  if (program.startTime && program.endTime) {
+    const parseHour = (timeStr) => {
+      if (!timeStr || typeof timeStr !== 'string') return null;
+      const match = timeStr.match(/(\d{1,2}):(\d{2})/);
+      if (match) {
+        return parseInt(match[1], 10) + parseInt(match[2], 10) / 60;
+      }
+      return null;
+    };
+    const start = parseHour(program.startTime);
+    const end = parseHour(program.endTime);
+    if (start !== null && end !== null && end > start) {
+      return Math.round((end - start) * 10) / 10;
+    }
+  }
+  return defaultHours;
+}
+
+/**
+ * Calculates total completed contribution hours for a list of application programs.
+ * Only adds hours AFTER the event is finished (daysLeft < 0 or status === 'Selesai').
+ */
+export function calculateTotalContributionHours(userApplications = []) {
+  if (!Array.isArray(userApplications)) return 0;
+  return userApplications.reduce((total, prog) => {
+    if (!prog || prog.status === 'Dibatalkan') return total;
+
+    const daysLeft = calculateDaysLeftGMT8({
+      date: prog.programDate || prog.date,
+      deadline: prog.programDeadline || prog.deadline
+    });
+
+    const isCompleted = prog.status === 'Selesai' || daysLeft < 0;
+
+    if (isCompleted) {
+      const duration = calculateProgramDurationHours(prog, 2);
+      return total + duration;
+    }
+
+    return total;
+  }, 0);
+}

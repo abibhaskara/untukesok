@@ -5,13 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowLeft, FiMapPin, FiCalendar, FiClock, 
-  FiUsers, FiShare2, FiHeart, FiCheckCircle, 
-  FiCheck 
+  FiUsers, FiShare2, FiCheckCircle
 } from 'react-icons/fi';
-import { doc, updateDoc, increment, collection, addDoc, query, where, getDocs, getDoc } from 'firebase/firestore';
-import { db } from '../../../src/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { getCachedProgramDetail } from '../../../src/lib/dataService';
-import { calculateDaysLeftGMT8 } from '../../../src/lib/dateUtils';
+import { calculateDaysLeftGMT8, formatDateDDMMYYYY } from '../../../src/lib/dateUtils';
 import { useAuth } from '../../../src/context/AuthContext';
 import Image from 'next/image';
 
@@ -35,15 +33,11 @@ export default function ProgramDetail() {
   const router = useRouter();
   const id = params?.id;
 
-  const [applied, setApplied] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
   const [program, setProgram] = useState(null);
   
   const { user } = useAuth();
   const [hasApplied, setHasApplied] = useState(false);
-  const [isApplying, setIsApplying] = useState(false);
-  const [existingCancelAppId, setExistingCancelAppId] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -233,18 +227,6 @@ export default function ProgramDetail() {
 
           {/* ── TITLE & HEADER META ── */}
           <motion.div variants={itemVariants} style={{ marginBottom: '20px' }}>
-            <span style={{
-              display: 'inline-block',
-              padding: '4px 12px',
-              borderRadius: '999px',
-              border: '1px solid #ef4444',
-              color: '#ef4444',
-              fontSize: '12px',
-              fontWeight: 600,
-              marginBottom: '12px'
-            }}>
-              {program.category || "Relawan Tatap Muka"}
-            </span>
 
             <h1 style={{
               fontSize: '26px',
@@ -257,19 +239,19 @@ export default function ProgramDetail() {
               {program.title}
             </h1>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '13px', opacity: 0.75 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11.5px', opacity: 0.75 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <FiMapPin size={14} style={{ color: 'var(--primary)' }} />
+                <FiMapPin size={13} style={{ color: 'var(--primary)' }} />
                 <span>{program.location}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <FiCalendar size={14} style={{ color: 'var(--primary)' }} />
-                  <span>{program.date}</span>
+                  <FiCalendar size={13} style={{ color: 'var(--primary)' }} />
+                  <span>{formatDateDDMMYYYY(program.date)}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <FiClock size={14} style={{ color: 'var(--primary)' }} />
-                  <span>{program.startTime && program.endTime ? `${program.startTime} - ${program.endTime} WIB` : '09:00 - 15:00 WIB'}</span>
+                  <FiClock size={13} style={{ color: 'var(--primary)' }} />
+                  <span>{program.startTime && program.endTime ? `${program.startTime} - ${program.endTime} WITA` : '10:00 - 12:00 WITA'}</span>
                 </div>
               </div>
             </div>
@@ -296,13 +278,14 @@ export default function ProgramDetail() {
             border: '1px solid var(--card-border)',
             marginBottom: '20px'
           }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 800 }}>
-              UE
-            </div>
+            <img 
+              src="/logo_UE.webp" 
+              alt="Untuk Esok Logo" 
+              style={{ width: '40px', height: '40px', borderRadius: '10px', objectFit: 'cover' }} 
+            />
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: '9px', fontWeight: 700, opacity: 0.5, margin: '0 0 2px 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>DIBUAT OLEH:</p>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 2px 0', color: 'var(--text-bold)' }}>Untuk Esok Organization</h3>
-              <p style={{ fontSize: '11px', opacity: 0.6, margin: 0 }}>Organisasi Non-Profit Pendidikan & Kebudayaan</p>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0, color: 'var(--text-bold)' }}>Komunitas Untuk Esok</h3>
             </div>
           </motion.div>
 
@@ -357,29 +340,29 @@ export default function ProgramDetail() {
           {/* ── SECTIONS / DETAILS ── */}
           <motion.div variants={itemVariants} style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid var(--card-border)' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-bold)' }}>Detail Program</h3>
-            <p style={{ fontSize: '15px', lineHeight: 1.7, opacity: 0.85, whiteSpace: 'pre-line' }}>
+            <p style={{ fontSize: '14px', lineHeight: 1.7, opacity: 0.85, whiteSpace: 'pre-line', textAlign: 'justify' }}>
               {program.description}
             </p>
           </motion.div>
 
           <motion.div variants={itemVariants} style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid var(--card-border)' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '16px', color: 'var(--text-bold)' }}>Informasi Utama</h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-bold)' }}>Informasi Utama</h3>
             <div className="program-info-grid">
-              <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
-                <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Kategori</p>
-                <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.category || "Pendidikan"}</p>
+              <div className="program-info-card">
+                <p className="program-info-card-label">Kategori</p>
+                <p className="program-info-card-value">{program.category || "Pendidikan"}</p>
               </div>
-              <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
-                <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Kuota Tersedia</p>
-                <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.volunteersTarget} Orang</p>
+              <div className="program-info-card">
+                <p className="program-info-card-label">Kuota Tersedia</p>
+                <p className="program-info-card-value">{program.volunteersTarget} Orang</p>
               </div>
-              <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
-                <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Tanggal Kegiatan</p>
-                <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.date}</p>
+              <div className="program-info-card">
+                <p className="program-info-card-label">Tanggal Kegiatan</p>
+                <p className="program-info-card-value">{formatDateDDMMYYYY(program.date)}</p>
               </div>
-              <div style={{ background: 'var(--card-bg)', padding: '14px 18px', borderRadius: '12px', border: '1px solid var(--card-border)', gridColumn: '1 / -1' }}>
-                <p style={{ fontSize: '11px', opacity: 0.5, marginBottom: '4px', textTransform: 'uppercase' }}>Lokasi Utama</p>
-                <p style={{ fontSize: '14px', fontWeight: 700 }}>{program.location}</p>
+              <div style={{ gridColumn: '1 / -1', textAlign: 'left', padding: '8px 0', border: 'none', background: 'transparent' }}>
+                <p className="program-info-card-label" style={{ textAlign: 'left' }}>Lokasi Utama</p>
+                <p className="program-info-card-value" style={{ textAlign: 'left', fontSize: '14px' }}>{program.location}</p>
               </div>
             </div>
           </motion.div>
@@ -387,7 +370,7 @@ export default function ProgramDetail() {
           {program.tasks && (
             <motion.div variants={itemVariants} style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid var(--card-border)' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-bold)' }}>Tugas Relawan</h3>
-              <div style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.85, whiteSpace: 'pre-line' }}>
+              <div style={{ fontSize: '14px', lineHeight: 1.7, opacity: 0.85, whiteSpace: 'pre-line', textAlign: 'justify' }}>
                 {program.tasks}
               </div>
             </motion.div>
@@ -396,7 +379,7 @@ export default function ProgramDetail() {
           {program.criteria && (
             <motion.div variants={itemVariants} style={{ paddingBottom: '24px', marginBottom: '24px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px', color: 'var(--text-bold)' }}>Kriteria Relawan</h3>
-              <div style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.85, whiteSpace: 'pre-line' }}>
+              <div style={{ fontSize: '14px', lineHeight: 1.7, opacity: 0.85, whiteSpace: 'pre-line', textAlign: 'justify' }}>
                 {program.criteria}
               </div>
             </motion.div>
@@ -465,23 +448,17 @@ export default function ProgramDetail() {
             }}
           >
             {hasApplied ? (
-              <>
-                <FiCheckCircle size={18} /> Sudah Terdaftar
-              </>
+              'Sudah Terdaftar'
             ) : isApplying ? (
               'Memproses...'
             ) : daysLeft < 0 ? (
-              <>
-                <FiCheck size={18} /> Selesai
-              </>
+              'Selesai'
             ) : isFull ? (
               <>
                 <FiUsers size={18} /> Kuota Penuh
               </>
             ) : (
-              <>
-                <FiCheck size={18} /> Jadi Relawan
-              </>
+              'Jadi Relawan'
             )}
           </button>
         </div>

@@ -2,8 +2,7 @@
 import { useState, useEffect } from 'react';
 import { FiAward, FiX, FiUser, FiPhone, FiMail, FiUserX } from 'react-icons/fi';
 import { db } from '../../../src/lib/firebase';
-import { collection, getDocs, doc, updateDoc, getDoc, increment } from 'firebase/firestore';
-
+import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
 export default function AdminApplications() {
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,23 +25,29 @@ export default function AdminApplications() {
         data = data.filter(app => app.programId === filterProgramId);
       }
       
-      // Fetch user data for applications to get name and phone
-      for (let app of data) {
-        if (!app.userName) {
-          try {
-            const userDoc = await getDoc(doc(db, 'users', app.userId));
-            if (userDoc.exists()) {
-              const userData = userDoc.data();
-              app.userName = userData.name || userData.displayName || 'Relawan';
-              app.userPhone = userData.phone || '';
-              app.userEmail = userData.email || '';
-            } else {
-              app.userName = `User (${app.userId.substring(0, 5)})`;
-            }
-          } catch (e) {
-            console.error("Failed to fetch user for", app.userId, e);
+      // Fetch latest user profile data for all applications so names are always up to date
+      try {
+        const usersSnap = await getDocs(collection(db, 'users'));
+        const userMap = {};
+        usersSnap.docs.forEach(uDoc => {
+          userMap[uDoc.id] = uDoc.data();
+        });
+
+        data.forEach(app => {
+          const latestUser = userMap[app.userId];
+          if (latestUser) {
+            if (latestUser.name) app.userName = latestUser.name;
+            else if (latestUser.displayName) app.userName = latestUser.displayName;
+            
+            if (latestUser.phone) app.userPhone = latestUser.phone;
+            if (latestUser.email) app.userEmail = latestUser.email;
           }
-        }
+          if (!app.userName) {
+            app.userName = `User (${app.userId ? app.userId.substring(0, 5) : 'Anonym'})`;
+          }
+        });
+      } catch (userFetchErr) {
+        console.warn("Failed to fetch latest users for applications:", userFetchErr);
       }
       
       // Sort by appliedAt desc
@@ -174,10 +179,15 @@ export default function AdminApplications() {
                         <FiMail /> {app.userEmail}
                       </div>
                     )}
-                    {!app.userPhone && !app.userEmail && (
-                      <div style={{ fontSize: '11px', color: '#aaa', marginTop: '4px', fontFamily: 'monospace' }}>
-                        ID: {app.userId.substring(0, 8)}...
-                      </div>
+                    {app.igProofUrl && (
+                      <a 
+                        href={app.igProofUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{ fontSize: '11px', color: '#0284c7', background: '#e0f2fe', padding: '2px 8px', borderRadius: '4px', textDecoration: 'none', fontWeight: 600, marginTop: '6px', display: 'inline-block' }}
+                      >
+                        📸 Bukti IG
+                      </a>
                     )}
                   </td>
                   <td style={{ padding: '16px 24px' }}>

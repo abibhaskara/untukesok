@@ -1,0 +1,301 @@
+
+> untuk-esok@0.0.0 lint
+> oxlint
+
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+   ,-[app/layout.jsx:6:14]
+ 5 | 
+ 6 | export const metadata = {
+   :              ^^^^^^^^
+ 7 |   title: 'Untuk Esok — Pemberdayaan & Kreativitas Manusia',
+   `----
+
+  ! eslint(no-unused-vars): Identifier 'FiTag' is imported but never used.
+   ,-[app/news/[id]/page.jsx:6:35]
+ 5 | import { getCachedNewsDetail } from '../../../src/lib/dataService';
+ 6 | import { FiArrowLeft, FiCalendar, FiTag } from 'react-icons/fi';
+   :                                   ^^|^^
+   :                                     `-- 'FiTag' is imported here
+ 7 | import { motion } from 'framer-motion';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiInstagram' is imported but never used.
+   ,-[app/programs/[id]/invoice/page.jsx:6:76]
+ 5 | import { motion } from 'framer-motion';
+ 6 | import { FiArrowLeft, FiCheckCircle, FiDownload, FiMessageCircle, FiImage, FiInstagram, FiUpload, FiAlertCircle, FiClock } from 'react-icons/fi';
+   :                                                                            ^^^^^|^^^^^
+   :                                                                                 `-- 'FiInstagram' is imported here
+ 7 | import { db } from '../../../../src/lib/firebase';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-extra-boolean-cast): Redundant Boolean call
+     ,-[app/programs/[id]/invoice/page.jsx:451:29]
+ 450 |                 width: '32px', height: '32px', borderRadius: '50%',
+ 451 |                 background: Boolean(igProof) ? '#10b981' : 'var(--primary)',
+     :                             ^^^^^^^^^^^^^^^^
+ 452 |                 color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0
+     `----
+  help: Remove the Boolean call as it will already be coerced to a boolean
+
+  ! eslint(no-extra-boolean-cast): Redundant Boolean call
+     ,-[app/programs/[id]/invoice/page.jsx:454:18]
+ 453 |               }}>
+ 454 |                 {Boolean(igProof) ? <FiCheckCircle size={18} /> : '2'}
+     :                  ^^^^^^^^^^^^^^^^
+ 455 |               </div>
+     `----
+  help: Remove the Boolean call as it will already be coerced to a boolean
+
+  ! eslint(no-unused-vars): Identifier 'FiUsers' is imported but never used.
+   ,-[app/page.jsx:5:17]
+ 4 | import {
+ 5 |   FiArrowRight, FiUsers, FiAward, FiBook,
+   :                 ^^^|^^^
+   :                    `-- 'FiUsers' is imported here
+ 6 |   FiActivity, FiLayers, FiDollarSign,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiAward' is imported but never used.
+   ,-[app/page.jsx:5:26]
+ 4 | import {
+ 5 |   FiArrowRight, FiUsers, FiAward, FiBook,
+   :                          ^^^|^^^
+   :                             `-- 'FiAward' is imported here
+ 6 |   FiActivity, FiLayers, FiDollarSign,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiBook' is imported but never used.
+   ,-[app/page.jsx:5:35]
+ 4 | import {
+ 5 |   FiArrowRight, FiUsers, FiAward, FiBook,
+   :                                   ^^^|^^
+   :                                      `-- 'FiBook' is imported here
+ 6 |   FiActivity, FiLayers, FiDollarSign,
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiActivity' is imported but never used.
+   ,-[app/page.jsx:6:3]
+ 5 |   FiArrowRight, FiUsers, FiAward, FiBook,
+ 6 |   FiActivity, FiLayers, FiDollarSign,
+   :   ^^^^^|^^^^
+   :        `-- 'FiActivity' is imported here
+ 7 |   FiHeart, FiCheckCircle, FiX
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiLayers' is imported but never used.
+   ,-[app/page.jsx:6:15]
+ 5 |   FiArrowRight, FiUsers, FiAward, FiBook,
+ 6 |   FiActivity, FiLayers, FiDollarSign,
+   :               ^^^^|^^^
+   :                   `-- 'FiLayers' is imported here
+ 7 |   FiHeart, FiCheckCircle, FiX
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiDollarSign' is imported but never used.
+   ,-[app/page.jsx:6:25]
+ 5 |   FiArrowRight, FiUsers, FiAward, FiBook,
+ 6 |   FiActivity, FiLayers, FiDollarSign,
+   :                         ^^^^^^|^^^^^
+   :                               `-- 'FiDollarSign' is imported here
+ 7 |   FiHeart, FiCheckCircle, FiX
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'Link' is imported but never used.
+    ,-[app/page.jsx:11:8]
+ 10 | import VisionMissionScroll from '../src/components/VisionMissionScroll';
+ 11 | import Link from 'next/link';
+    :        ^^|^
+    :          `-- 'Link' is imported here
+ 12 | import Image from 'next/image';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'heroBgY' is declared but never used. Unused variables should start with a '_'.
+     ,-[app/page.jsx:105:9]
+ 104 |   const { scrollY } = useScroll();
+ 105 |   const heroBgY = useTransform(scrollY, [0, 1000], [0, 400]);
+     :         ^^^|^^^
+     :            `-- 'heroBgY' is declared here
+ 106 | 
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Parameter 'result' is declared but never used. Unused parameters should start with a '_'.
+     ,-[app/page.jsx:162:32]
+ 161 |         window.snap.pay(data.token, {
+ 162 |           onSuccess: function (result) {
+     :                                ^^^|^^
+     :                                   `-- 'result' is declared here
+ 163 |             setIsDonateSubmitted(true);
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Parameter 'result' is declared but never used. Unused parameters should start with a '_'.
+     ,-[app/page.jsx:166:32]
+ 165 |           },
+ 166 |           onPending: function (result) {
+     :                                ^^^|^^
+     :                                   `-- 'result' is declared here
+ 167 |             alert('Payment pending. Please complete your payment.');
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Identifier 'FiArrowLeft' is imported but never used.
+   ,-[app/news/page.jsx:5:10]
+ 4 | import { useRouter } from 'next/navigation';
+ 5 | import { FiArrowLeft } from 'react-icons/fi';
+   :          ^^^^^|^^^^^
+   :               `-- 'FiArrowLeft' is imported here
+ 6 | import { getCachedNews } from '../../src/lib/dataService';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'getDoc' is imported but never used.
+   ,-[app/admin/applications/page.jsx:5:47]
+ 4 | import { db } from '../../../src/lib/firebase';
+ 5 | import { collection, getDocs, doc, updateDoc, getDoc, increment } from 'firebase/firestore';
+   :                                               ^^^|^^
+   :                                                  `-- 'getDoc' is imported here
+ 6 | 
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiArrowLeft' is imported but never used.
+   ,-[app/programs/page.jsx:6:20]
+ 5 | import { useRouter } from 'next/navigation';
+ 6 | import { FiSearch, FiArrowLeft, FiMapPin, FiClock, FiUsers, FiSliders, FiChevronDown, FiAlertCircle, FiX, FiCheck } from 'react-icons/fi';
+   :                    ^^^^^|^^^^^
+   :                         `-- 'FiArrowLeft' is imported here
+ 7 | import { getCachedPrograms } from '../../src/lib/dataService';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiAlertCircle' is imported but never used.
+   ,-[app/programs/page.jsx:6:87]
+ 5 | import { useRouter } from 'next/navigation';
+ 6 | import { FiSearch, FiArrowLeft, FiMapPin, FiClock, FiUsers, FiSliders, FiChevronDown, FiAlertCircle, FiX, FiCheck } from 'react-icons/fi';
+   :                                                                                       ^^^^^^|^^^^^^
+   :                                                                                             `-- 'FiAlertCircle' is imported here
+ 7 | import { getCachedPrograms } from '../../src/lib/dataService';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'formatDateDDMMYYYY' is imported but never used.
+   ,-[app/programs/page.jsx:8:33]
+ 7 | import { getCachedPrograms } from '../../src/lib/dataService';
+ 8 | import { calculateDaysLeftGMT8, formatDateDDMMYYYY } from '../../src/lib/dateUtils';
+   :                                 ^^^^^^^^^|^^^^^^^^
+   :                                          `-- 'formatDateDDMMYYYY' is imported here
+ 9 | import Image from 'next/image';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Variable 'setOnlyUrgent' is declared but never used. Unused variables should start with a '_'.
+    ,-[app/programs/page.jsx:46:22]
+ 45 |   const [sortOption, setSortOption] = useState('Terbaru'); // 'Terbaru', 'BatasWaktu', 'KuotaHampirPenuh'
+ 46 |   const [onlyUrgent, setOnlyUrgent] = useState(false);
+    :                      ^^^^^^|^^^^^^
+    :                            `-- 'setOnlyUrgent' is declared here
+ 47 |   const [isSortOpen, setIsSortOpen] = useState(false);
+    `----
+  help: Consider removing this declaration.
+
+  ! react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+    ,-[app/programs/page.jsx:11:14]
+ 10 | 
+ 11 | export const programCategories = [
+    :              ^^^^^^^^^^^^^^^^^
+ 12 |   'Semua',
+    `----
+
+  ! eslint(no-unused-vars): Identifier 'FiAlertCircle' is imported but never used.
+   ,-[app/admin/programs/page.jsx:3:77]
+ 2 | import { useState, useEffect } from 'react';
+ 3 | import { FiPlus, FiEdit2, FiTrash2, FiX, FiUsers, FiInfo, FiMapPin, FiLink, FiAlertCircle } from 'react-icons/fi';
+   :                                                                             ^^^^^^|^^^^^^
+   :                                                                                   `-- 'FiAlertCircle' is imported here
+ 4 | import { db } from '../../../src/lib/firebase';
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiHeart' is imported but never used.
+   ,-[app/programs/[id]/page.jsx:8:22]
+ 7 |   FiArrowLeft, FiMapPin, FiCalendar, FiClock, 
+ 8 |   FiUsers, FiShare2, FiHeart, FiCheckCircle, 
+   :                      ^^^|^^^
+   :                         `-- 'FiHeart' is imported here
+ 9 |   FiCheck 
+   `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'FiCheck' is imported but never used.
+    ,-[app/programs/[id]/page.jsx:9:3]
+  8 |   FiUsers, FiShare2, FiHeart, FiCheckCircle, 
+  9 |   FiCheck 
+    :   ^^^|^^^
+    :      `-- 'FiCheck' is imported here
+ 10 | } from 'react-icons/fi';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'doc' is imported but never used.
+    ,-[app/programs/[id]/page.jsx:11:10]
+ 10 | } from 'react-icons/fi';
+ 11 | import { doc, updateDoc, increment, collection, addDoc, query, where, getDocs, getDoc } from 'firebase/firestore';
+    :          ^|^
+    :           `-- 'doc' is imported here
+ 12 | import { getCachedProgramDetail } from '../../../src/lib/dataService';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'updateDoc' is imported but never used.
+    ,-[app/programs/[id]/page.jsx:11:15]
+ 10 | } from 'react-icons/fi';
+ 11 | import { doc, updateDoc, increment, collection, addDoc, query, where, getDocs, getDoc } from 'firebase/firestore';
+    :               ^^^^|^^^^
+    :                   `-- 'updateDoc' is imported here
+ 12 | import { getCachedProgramDetail } from '../../../src/lib/dataService';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'increment' is imported but never used.
+    ,-[app/programs/[id]/page.jsx:11:26]
+ 10 | } from 'react-icons/fi';
+ 11 | import { doc, updateDoc, increment, collection, addDoc, query, where, getDocs, getDoc } from 'firebase/firestore';
+    :                          ^^^^|^^^^
+    :                              `-- 'increment' is imported here
+ 12 | import { getCachedProgramDetail } from '../../../src/lib/dataService';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'addDoc' is imported but never used.
+    ,-[app/programs/[id]/page.jsx:11:49]
+ 10 | } from 'react-icons/fi';
+ 11 | import { doc, updateDoc, increment, collection, addDoc, query, where, getDocs, getDoc } from 'firebase/firestore';
+    :                                                 ^^^|^^
+    :                                                    `-- 'addDoc' is imported here
+ 12 | import { getCachedProgramDetail } from '../../../src/lib/dataService';
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'getDoc' is imported but never used.
+    ,-[app/programs/[id]/page.jsx:11:80]
+ 10 | } from 'react-icons/fi';
+ 11 | import { doc, updateDoc, increment, collection, addDoc, query, where, getDocs, getDoc } from 'firebase/firestore';
+    :                                                                                ^^^|^^
+    :                                                                                   `-- 'getDoc' is imported here
+ 12 | import { getCachedProgramDetail } from '../../../src/lib/dataService';
+    `----
+  help: Consider removing this import.
+
+Found 30 warnings and 0 errors.
+Finished in 27ms on 25 files with 91 rules using 10 threads.

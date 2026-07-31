@@ -3,7 +3,7 @@ export const runtime = 'edge';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FiArrowLeft, FiCheckCircle, FiDownload, FiMessageCircle, FiImage, FiInstagram, FiUpload, FiAlertCircle, FiClock } from 'react-icons/fi';
+import { FiArrowLeft, FiCheckCircle, FiDownload, FiMessageCircle, FiImage, FiUpload, FiAlertCircle, FiClock } from 'react-icons/fi';
 import { db } from '../../../../src/lib/firebase';
 import { doc, getDoc, getDocs, collection, query, where, addDoc, updateDoc, increment } from 'firebase/firestore';
 import { useAuth } from '../../../../src/context/AuthContext';
@@ -118,13 +118,35 @@ export default function InvoicePage() {
         console.warn("Failed to fetch user profile", err);
       }
 
+      // Upload IG Proof File to Firebase Storage / Base64 fallback
+      let igProofUrl = '';
+      if (igProof) {
+        try {
+          const { storage } = await import('../../../../src/lib/firebase');
+          const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+          const fileName = `ig_proofs/${user.uid}_${Date.now()}_${igProof.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+          const storageRef = ref(storage, fileName);
+          const snapshot = await uploadBytes(storageRef, igProof);
+          igProofUrl = await getDownloadURL(snapshot.ref);
+        } catch (storageErr) {
+          console.warn("Storage upload fallback to Data URL:", storageErr);
+          igProofUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result || '');
+            reader.onerror = () => resolve('');
+            reader.readAsDataURL(igProof);
+          });
+        }
+      }
+
       // Record to applications collection in Firestore
       if (existingCancelAppId) {
         await updateDoc(doc(db, 'applications', existingCancelAppId), {
           status: 'Terdaftar',
           appliedAt: new Date().toISOString(),
           cancelReason: '',
-          canceledAt: ''
+          canceledAt: '',
+          igProofUrl: igProofUrl || ''
         });
       } else {
         await addDoc(collection(db, 'applications'), {
@@ -139,7 +161,8 @@ export default function InvoicePage() {
           programLocation: program.location,
           status: 'Terdaftar',
           appliedAt: new Date().toISOString(),
-          credentialId: `CERT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`
+          credentialId: `CERT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+          igProofUrl: igProofUrl || ''
         });
       }
 
@@ -214,9 +237,6 @@ export default function InvoicePage() {
           {isVerified ? (
             <>
               <FiCheckCircle size={64} color="#10b981" style={{ marginBottom: '16px' }} />
-              <div style={{ display: 'inline-block', background: '#dcfce7', color: '#15803d', fontWeight: 700, fontSize: '12px', padding: '4px 12px', borderRadius: '999px', marginBottom: '8px' }}>
-                STATUS: SUDAH TERDAFTAR
-              </div>
               <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '28px', marginBottom: '8px' }}>
                 Pendaftaran Berhasil!
               </h1>
@@ -251,14 +271,78 @@ export default function InvoicePage() {
               padding: '24px',
               color: 'white',
               marginBottom: '32px',
-              boxShadow: '0 10px 25px rgba(16, 185, 129, 0.25)',
               textAlign: 'center'
             }}
           >
-            <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-              <FiMessageCircle size={24} color="#ffffff" />
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+              <motion.svg 
+                width="190" 
+                height="160" 
+                viewBox="0 0 200 170" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                animate={{
+                  y: [0, -8, 0],
+                  rotate: [-2, 2, -2],
+                  scale: [1, 1.025, 1]
+                }}
+                transition={{
+                  duration: 2.8,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.18))' }}
+              >
+                {/* Feet */}
+                <rect x="68" y="142" width="22" height="18" rx="8" fill="#1d4ed8" />
+                <rect x="110" y="142" width="22" height="18" rx="8" fill="#1d4ed8" />
+
+                {/* Ears */}
+                <path d="M 46 45 C 32 10 68 18 72 40 Z" fill="#2563eb" />
+                <path d="M 52 42 C 40 18 64 24 66 38 Z" fill="#93c5fd" opacity="0.6" />
+                
+                <path d="M 154 45 C 168 10 132 18 128 40 Z" fill="#2563eb" />
+                <path d="M 148 42 C 160 18 136 24 134 38 Z" fill="#93c5fd" opacity="0.6" />
+
+                {/* Body */}
+                <ellipse cx="100" cy="96" rx="68" ry="56" fill="#3b82f6" />
+                
+                {/* Light Blue Face Patch */}
+                <ellipse cx="100" cy="85" rx="52" ry="40" fill="#bfdbfe" opacity="0.9" />
+
+                {/* Eyes */}
+                <ellipse cx="74" cy="80" rx="16" ry="19" fill="#0f172a" />
+                <circle cx="70" cy="73" r="6" fill="#ffffff" />
+                <circle cx="80" cy="87" r="2.5" fill="#ffffff" opacity="0.8" />
+
+                <ellipse cx="126" cy="80" rx="16" ry="19" fill="#0f172a" />
+                <circle cx="122" cy="73" r="6" fill="#ffffff" />
+                <circle cx="132" cy="87" r="2.5" fill="#ffffff" opacity="0.8" />
+
+                {/* Nose & Smile */}
+                <ellipse cx="100" cy="94" rx="3.5" ry="2.5" fill="#0f172a" />
+                <path d="M 91 101 Q 100 114 109 101 Z" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+                <path d="M 94 101 Q 100 106 106 101" fill="#ffffff" opacity="0.9" />
+
+                {/* Right Arm (Waving) */}
+                <path d="M 162 90 C 185 80 188 65 178 60 C 172 57 166 66 160 80 Z" fill="#2563eb" />
+
+                {/* Megaphone & Left Arm */}
+                <g transform="translate(12, 68) rotate(-12)">
+                  {/* Soundwaves */}
+                  <path d="M -2 15 Q -10 30 -2 45" stroke="#f59e0b" strokeWidth="3.5" strokeLinecap="round" />
+                  <path d="M -10 20 Q -17 30 -10 40" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" />
+
+                  {/* Megaphone Cone */}
+                  <path d="M 38 30 L 8 10 L 8 50 Z" fill="#2563eb" stroke="#0f172a" strokeWidth="3.5" />
+                  <ellipse cx="8" cy="30" rx="4" ry="20" fill="#60a5fa" stroke="#0f172a" strokeWidth="2" />
+                  <rect x="34" y="24" width="16" height="12" rx="3" fill="#60a5fa" stroke="#0f172a" strokeWidth="2" />
+                  
+                  {/* Left Paw holding Megaphone */}
+                  <ellipse cx="44" cy="36" rx="9" ry="8" fill="#3b82f6" stroke="#0f172a" strokeWidth="2" />
+                </g>
+              </motion.svg>
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Grup WhatsApp Relawan</h3>
             <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '20px', lineHeight: 1.5 }}>
               Bergabunglah sekarang ke grup WhatsApp resmi relawan untuk berdiskusi, mendapatkan info brief, dan jadwal kegiatan.
             </p>
@@ -364,10 +448,10 @@ export default function InvoicePage() {
             <div style={{ display: 'flex', gap: '16px' }}>
               <div style={{
                 width: '32px', height: '32px', borderRadius: '50%',
-                background: Boolean(igProof) ? '#10b981' : 'var(--primary)',
+                background: igProof ? '#10b981' : 'var(--primary)',
                 color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0
               }}>
-                {Boolean(igProof) ? <FiCheckCircle size={18} /> : '2'}
+                {igProof ? <FiCheckCircle size={18} /> : '2'}
               </div>
               <div style={{ flex: 1 }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>Follow Instagram & Upload Bukti</h3>

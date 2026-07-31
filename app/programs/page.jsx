@@ -3,12 +3,12 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { FiSearch, FiArrowLeft, FiMapPin, FiClock, FiUsers, FiSliders, FiChevronDown, FiAlertCircle, FiX, FiCheck } from 'react-icons/fi';
+import { FiSearch, FiMapPin, FiClock, FiUsers, FiSliders, FiChevronDown, FiX, FiCheck } from 'react-icons/fi';
 import { getCachedPrograms } from '../../src/lib/dataService';
 import { calculateDaysLeftGMT8 } from '../../src/lib/dateUtils';
 import Image from 'next/image';
 
-export const programCategories = [
+const programCategories = [
   'Semua',
   'Pendidikan',
   'Lingkungan',
@@ -43,7 +43,6 @@ export default function Programs() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [sortOption, setSortOption] = useState('Terbaru'); // 'Terbaru', 'BatasWaktu', 'KuotaHampirPenuh'
-  const [onlyUrgent, setOnlyUrgent] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [programsData, setProgramsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,7 +89,7 @@ export default function Programs() {
       }
       return 0; // Terbaru (default index order)
     });
-  }, [searchQuery, selectedCategory, sortOption, onlyUrgent, programsData]);
+  }, [searchQuery, selectedCategory, sortOption, programsData]);
 
   return (
     <div className="home-content">
@@ -387,8 +386,7 @@ export default function Programs() {
                           borderRadius: '999px',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '4px',
-                          boxShadow: '0 4px 10px rgba(239,68,68,0.3)'
+                          gap: '4px'
                         }}>
                           <FiUsers size={11} /> Kuota Penuh
                         </div>
@@ -418,7 +416,7 @@ export default function Programs() {
                       
                       {/* Title */}
                       <h3 style={{
-                        fontSize: '18px',
+                        fontSize: '15px',
                         fontWeight: 700,
                         fontFamily: 'var(--font-poppins)',
                         lineHeight: 1.3,
@@ -429,16 +427,16 @@ export default function Programs() {
                       </h3>
 
                       {/* Location */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', opacity: 0.9, marginBottom: '12px' }}>
-                        <FiMapPin size={13} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', opacity: 0.9, marginBottom: '12px' }}>
+                        <FiMapPin size={12} />
                         <span>{program.location}</span>
                       </div>
 
                       {/* Progress Bar & Quota */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 600 }}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <FiUsers size={14} /> Relawan
+                            <FiUsers size={12} /> Relawan
                           </span>
                           <span>
                             {program.volunteersJoined} / {program.volunteersTarget} ({percent}%)

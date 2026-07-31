@@ -95,7 +95,6 @@ function SlideTextItem({ slide, index, scrollYProgress }) {
       className="vm-slide-text"
       style={{ opacity, y }}
     >
-      <p className="vm-subtext">{slide.subtext}</p>
       <div style={{ overflow: 'hidden' }}>
         <h2 className="vm-title">{slide.title}</h2>
       </div>

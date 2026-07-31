@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { 
-  FiUser, FiMail, FiCheckCircle, FiAward, 
+  FiAward, 
   FiSettings, FiHelpCircle, FiLogOut, FiChevronRight, 
-  FiArrowLeft, FiHeart, FiFileText, FiShield, 
-  FiBell, FiCalendar, FiMapPin, FiClock 
+  FiHeart, FiShield
 } from 'react-icons/fi';
 import { useAuth } from '../../src/context/AuthContext';
 import { db, auth, googleProvider } from '../../src/lib/firebase';
 import { signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, updateProfile } from 'firebase/auth';
-import { collection, query, where, onSnapshot, doc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, getDocs, doc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { calculateTotalContributionHours } from '../../src/lib/dateUtils';
 
 const containerVariants = {
   hidden: { opacity: 1 },
@@ -77,6 +77,16 @@ export default function Account() {
         updateData.phone = fullPhone;
       }
       await setDoc(doc(db, 'users', user.uid), updateData, { merge: true });
+
+      // Update userName in all application documents for this user
+      // so the admin volunteer list (Daftar Relawan) stays in sync
+      const appsQuery = query(collection(db, 'applications'), where('userId', '==', user.uid));
+      const appsSnapshot = await getDocs(appsQuery);
+      const appUpdatePromises = appsSnapshot.docs.map(appDoc =>
+        updateDoc(doc(db, 'applications', appDoc.id), { userName: editName })
+      );
+      await Promise.all(appUpdatePromises);
+
       setShowEditProfile(false);
       window.location.reload();
     } catch (error) {
@@ -443,9 +453,6 @@ export default function Account() {
                         <FiSettings size={13} /> Edit
                       </button>
                     </div>
-                    <span style={{ background: '#dcfce7', color: '#166534', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px', display: 'inline-block', marginBottom: '6px' }}>
-                      Relawan Aktif
-                    </span>
                     <p style={{ fontSize: '12px', opacity: 0.6, margin: 0, wordBreak: 'break-all' }}>{user.email}</p>
                   </div>
                 </div>
@@ -479,7 +486,7 @@ export default function Account() {
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--accent)', margin: '0 0 4px 0' }}>
-                    {myPrograms.filter(p => p.status !== 'Dibatalkan').length * 5}
+                    {calculateTotalContributionHours(myPrograms)}
                   </h3>
                   <p style={{ fontSize: '11px', opacity: 0.6, margin: 0, fontWeight: 600 }}>Jam Kontribusi</p>
                 </div>
@@ -842,8 +849,7 @@ export default function Account() {
                       }}
                     >
                       <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px', color: '#111' }}>Lengkapi Profil Anda</h2>
-                      <div style={{ background: '#eff6ff', color: '#1d4ed8', padding: '12px', borderRadius: '12px', fontSize: '13px', marginBottom: '20px', textAlign: 'left', lineHeight: '1.5' }}>
-                        <FiCheckCircle style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                      <div style={{ color: '#111', padding: '0', fontSize: '13px', marginBottom: '20px', textAlign: 'left', lineHeight: '1.5' }}>
                         Dianjurkan menggunakan <strong>nama lengkap asli</strong> untuk keperluan pembuatan sertifikat digital dan dokumentasi.
                       </div>
                       

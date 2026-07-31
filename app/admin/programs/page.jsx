@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiUsers, FiInfo, FiMapPin, FiLink, FiAlertCircle } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiUsers, FiInfo, FiMapPin, FiLink } from 'react-icons/fi';
 import { db } from '../../../src/lib/firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { clearCache } from '../../../src/lib/dataService';

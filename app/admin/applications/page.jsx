@@ -154,14 +154,15 @@ export default function AdminApplications() {
               <th style={{ padding: '16px 24px', color: '#666', fontWeight: 600 }}>Relawan</th>
               <th style={{ padding: '16px 24px', color: '#666', fontWeight: 600 }}>Program</th>
               <th style={{ padding: '16px 24px', color: '#666', fontWeight: 600 }}>Tanggal Daftar</th>
+              <th style={{ padding: '16px 24px', color: '#666', fontWeight: 600 }}>Bukti Follow</th>
               <th style={{ padding: '16px 24px', color: '#666', fontWeight: 600 }}>Aksi / Sertifikat</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
-              <tr><td colSpan="4" style={{ padding: '24px', textAlign: 'center' }}>Memuat data...</td></tr>
+              <tr><td colSpan="5" style={{ padding: '24px', textAlign: 'center' }}>Memuat data...</td></tr>
             ) : applications.length === 0 ? (
-              <tr><td colSpan="4" style={{ padding: '24px', textAlign: 'center' }}>Belum ada relawan yang mendaftar.</td></tr>
+              <tr><td colSpan="5" style={{ padding: '24px', textAlign: 'center' }}>Belum ada relawan yang mendaftar.</td></tr>
             ) : (
               applications.map(app => (
                 <tr key={app.id} style={{ borderBottom: '1px solid #eaeaea' }}>
@@ -179,16 +180,6 @@ export default function AdminApplications() {
                         <FiMail /> {app.userEmail}
                       </div>
                     )}
-                    {app.igProofUrl && (
-                      <a 
-                        href={app.igProofUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        style={{ fontSize: '11px', color: '#0284c7', background: '#e0f2fe', padding: '2px 8px', borderRadius: '4px', textDecoration: 'none', fontWeight: 600, marginTop: '6px', display: 'inline-block' }}
-                      >
-                        📸 Bukti IG
-                      </a>
-                    )}
                   </td>
                   <td style={{ padding: '16px 24px' }}>
                     <div style={{ fontWeight: 600 }}>{app.programTitle}</div>
@@ -203,6 +194,27 @@ export default function AdminApplications() {
                   </td>
                   <td style={{ padding: '16px 24px', fontSize: '14px' }}>
                     {new Date(app.appliedAt).toLocaleDateString('id-ID')}
+                  </td>
+                  <td style={{ padding: '16px 24px' }}>
+                    {app.igProofUrl ? (
+                      <a 
+                        href={app.igProofUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        onClick={(e) => {
+                          if (app.igProofUrl.startsWith('data:')) {
+                            e.preventDefault();
+                            const w = window.open();
+                            if (w) w.document.write(`<title>Bukti Follow</title><body style="margin:0;display:flex;justify-content:center;background:#111;"><img src="${app.igProofUrl}" style="max-width:100%;height:auto;" /></body>`);
+                          }
+                        }}
+                        style={{ fontSize: '12px', color: '#0284c7', background: '#e0f2fe', padding: '6px 12px', borderRadius: '4px', textDecoration: 'none', fontWeight: 600, display: 'inline-block' }}
+                      >
+                        Lihat Bukti
+                      </a>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#888' }}>-</span>
+                    )}
                   </td>
                   <td style={{ padding: '16px 24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

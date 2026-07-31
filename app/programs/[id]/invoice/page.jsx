@@ -118,25 +118,31 @@ export default function InvoicePage() {
         console.warn("Failed to fetch user profile", err);
       }
 
-      // Upload IG Proof File to Firebase Storage / Base64 fallback
+      // Upload IG Proof File: Skip Firebase Storage and use Compressed Base64 to save directly in Firestore
       let igProofUrl = '';
       if (igProof) {
-        try {
-          const { storage } = await import('../../../../src/lib/firebase');
-          const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
-          const fileName = `ig_proofs/${user.uid}_${Date.now()}_${igProof.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-          const storageRef = ref(storage, fileName);
-          const snapshot = await uploadBytes(storageRef, igProof);
-          igProofUrl = await getDownloadURL(snapshot.ref);
-        } catch (storageErr) {
-          console.warn("Storage upload fallback to Data URL:", storageErr);
-          igProofUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result || '');
-            reader.onerror = () => resolve('');
-            reader.readAsDataURL(igProof);
-          });
-        }
+        igProofUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(igProof);
+          reader.onload = (event) => {
+            const img = new window.Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const MAX_WIDTH = 600; // Kompres ukuran agar tidak melebihi batas 1MB Firestore
+              const scaleSize = MAX_WIDTH / img.width;
+              canvas.width = MAX_WIDTH;
+              canvas.height = img.height * scaleSize;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              // Kualitas 0.6 menghasilkan string base64 yang sangat ringan (~50-100kb)
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+              resolve(dataUrl);
+            };
+            img.onerror = () => resolve('');
+          };
+          reader.onerror = () => resolve('');
+        });
       }
 
       // Record to applications collection in Firestore

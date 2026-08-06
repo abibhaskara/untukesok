@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiArrowLeft, FiCheckCircle, FiDownload, FiMessageCircle, FiImage, FiUpload, FiAlertCircle, FiClock } from 'react-icons/fi';
 import { db } from '../../../../src/lib/firebase';
-import { doc, getDoc, getDocs, collection, query, where, addDoc, updateDoc, increment } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection, query, where, addDoc, updateDoc, increment, getCountFromServer } from 'firebase/firestore';
 import { useAuth } from '../../../../src/context/AuthContext';
 import { getCachedProgramDetail, clearCache } from '../../../../src/lib/dataService';
 export default function InvoicePage() {
@@ -145,6 +145,21 @@ export default function InvoicePage() {
         });
       }
 
+      // Generate certificate number
+      let certOrder = 1;
+      try {
+        const countSnapshot = await getCountFromServer(collection(db, 'applications'));
+        certOrder = countSnapshot.data().count + 1;
+      } catch (e) {
+        console.warn("Failed to get count", e);
+      }
+      const orderStr = String(certOrder).padStart(3, '0');
+      const romanMonths = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+      const eventDate = program.date ? new Date(program.date) : new Date();
+      const eventMonth = romanMonths[eventDate.getMonth()];
+      const eventYear = eventDate.getFullYear();
+      const certificateNumber = `${orderStr}/VOL/UE/${eventMonth}/${eventYear}`;
+
       // Record to applications collection in Firestore
       if (existingCancelAppId) {
         await updateDoc(doc(db, 'applications', existingCancelAppId), {
@@ -152,7 +167,8 @@ export default function InvoicePage() {
           appliedAt: new Date().toISOString(),
           cancelReason: '',
           canceledAt: '',
-          igProofUrl: igProofUrl || ''
+          igProofUrl: igProofUrl || '',
+          certificateNumber: certificateNumber
         });
       } else {
         await addDoc(collection(db, 'applications'), {
@@ -168,6 +184,7 @@ export default function InvoicePage() {
           status: 'Terdaftar',
           appliedAt: new Date().toISOString(),
           credentialId: `CERT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+          certificateNumber: certificateNumber,
           igProofUrl: igProofUrl || ''
         });
       }

@@ -263,7 +263,7 @@ export default function AdminApplications() {
             
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px', marginBottom: '24px' }}>
               <div style={{ background: '#f8f9fa', padding: '16px', borderRadius: '12px', border: '1px dashed #ccc', textAlign: 'center' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 12px 0', color: '#666' }}>QR Kredensial</h3>
+                <h3 style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 12px 0', color: '#666' }}>Informasi Kredensial</h3>
                 <div style={{ background: 'white', padding: '8px', borderRadius: '8px', border: '1px solid #eaeaea', display: 'inline-block' }}>
                   <img 
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}/verify/${editingApp?.credentialId}`) : ''}`}
@@ -271,7 +271,16 @@ export default function AdminApplications() {
                     style={{ width: '120px', height: '120px' }}
                   />
                 </div>
-                <p style={{ fontSize: '11px', color: '#888', marginTop: '12px', fontFamily: 'monospace' }}>{editingApp?.credentialId}</p>
+                <div style={{ marginTop: '12px', textAlign: 'left', background: 'white', padding: '8px', borderRadius: '8px', border: '1px solid #eaeaea' }}>
+                  <div style={{ marginBottom: '8px' }}>
+                    <span style={{ fontSize: '10px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>Nomor Sertifikat</span>
+                    <p style={{ fontSize: '12px', fontWeight: 600, color: '#111', margin: '2px 0 0 0', fontFamily: 'monospace' }}>{editingApp?.certificateNumber || '-'}</p>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '10px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>ID Kredensial</span>
+                    <p style={{ fontSize: '11px', color: '#666', margin: '2px 0 0 0', fontFamily: 'monospace' }}>{editingApp?.credentialId}</p>
+                  </div>
+                </div>
                 <a 
                   href={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}/verify/${editingApp?.credentialId}`) : ''}`}
                   target="_blank"

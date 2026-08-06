@@ -55,12 +55,20 @@ export default function VerifyCertificatePage() {
           
           <div style={{ background: '#f8f9fa', borderRadius: '16px', padding: '20px', textAlign: 'left', marginBottom: '24px', border: '1px solid #eaeaea' }}>
             <div style={{ marginBottom: '16px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>Nama Pemilik</span>
+              <p style={{ fontSize: '15px', fontWeight: 600, color: '#111', margin: '4px 0 0 0' }}>{certData.userName || '-'}</p>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
               <span style={{ fontSize: '11px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>Program Kegiatan</span>
               <p style={{ fontSize: '15px', fontWeight: 600, color: '#111', margin: '4px 0 0 0' }}>{certData.programTitle}</p>
             </div>
             <div style={{ marginBottom: '16px' }}>
               <span style={{ fontSize: '11px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>Tanggal Diterbitkan</span>
-              <p style={{ fontSize: '15px', fontWeight: 600, color: '#111', margin: '4px 0 0 0' }}>{new Date(certData.appliedAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              <p style={{ fontSize: '15px', fontWeight: 600, color: '#111', margin: '4px 0 0 0' }}>{certData.programDate ? new Date(certData.programDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date(certData.appliedAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>Nomor Sertifikat</span>
+              <p style={{ fontSize: '15px', fontWeight: 600, color: '#111', margin: '4px 0 0 0', fontFamily: 'monospace' }}>Cert. No.: {certData.certificateNumber || '-'}</p>
             </div>
             <div>
               <span style={{ fontSize: '11px', fontWeight: 700, color: '#888', textTransform: 'uppercase' }}>ID Kredensial</span>

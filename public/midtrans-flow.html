@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumen Flow Transaksi & Customer Journey - Untuk Esok (Midtrans)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #1e293b;
+      background: #f8fafc;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 48px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .merchant-badge {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      text-align: right;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 28px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 28px;
+      font-size: 13.5px;
+    }
+
+    .info-table th, .info-table td {
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    .info-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: #334155;
+      width: 28%;
+    }
+
+    .info-table td {
+      color: #1e293b;
+    }
+
+    .url-tag {
+      font-family: monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0369a1;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #205a28;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .step-url {
+      font-size: 12px;
+      color: #0284c7;
+      margin-left: auto;
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .step-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: #334155;
+    }
+
+    .step-box ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .step-box li {
+      margin-bottom: 4px;
+    }
+
+    .footer-note {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .print-btn {
+      display: inline-block;
+      background: #205a28;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+      .container {
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .print-btn {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div style="max-width: 860px; margin: 0 auto; text-align: right;">
+    <button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF</button>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>DOKUMEN FLOW TRANSAKSI & CUSTOMER JOURNEY</h1>
+        <p>Lampiran Verifikasi Integrasi Midtrans Payment Gateway (Go-Live)</p>
+      </div>
+      <div class="merchant-badge">
+        <div><strong>UNTUK ESOK</strong></div>
+        <div>Platform Kegiatan & Relawan</div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: INFORMASI MERCHANT & WEBSITE -->
+    <div class="section-title">1. Informasi Platform & URL Website</div>
+    <table class="info-table">
+      <tr>
+        <th>Nama Platform / Merchant</th>
+        <td><strong>Untuk Esok</strong> (Komunitas / Inisiatif Sosial Untuk Esok)</td>
+      </tr>
+      <tr>
+        <th>Domain Resmi (Production URL)</th>
+        <td><span class="url-tag">https://untukesok.id</span></td>
+      </tr>
+      <tr>
+        <th>Tipe Produk / Layanan</th>
+        <td>Pendaftaran Kegiatan Relawan & Program Edukasi Sosial (Commitment Fee)</td>
+      </tr>
+      <tr>
+        <th>Metode Pembayaran Aktif</th>
+        <td>QRIS / E-Wallet (GoPay, ShopeePay), Virtual Account (BCA, Mandiri, BRI, BNI), Kartu Kredit/Debit</td>
+      </tr>
+      <tr>
+        <th>Model Skema Biaya</th>
+        <td><strong>Cost-Passing:</strong> Biaya Layanan Midtrans ditransparansikan kepada peserta saat checkout.</td>
+      </tr>
+    </table>
+
+    <!-- SECTION 2: TABEL PEMETAAN URL -->
+    <div class="section-title">2. Pemetaan URL Sesuai Alur Pembayaran (URL Mapping)</div>
+    <table class="info-table">
+      <thead>
+        <tr style="background: #f8fafc;">
+          <th style="width: 10%;">Langkah</th>
+          <th style="width: 30%;">Halaman / Modul</th>
+          <th style="width: 60%;">Alamat URL Resmi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Halaman Utama (Landing Page)</td>
+          <td><span class="url-tag">https://untukesok.id/</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Autentikasi Akun (Login / Register)</td>
+          <td><span class="url-tag">https://untukesok.id/account</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Katalog Daftar Kegiatan</td>
+          <td><span class="url-tag">https://untukesok.id/programs</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Detail Kegiatan & Kuota</td>
+          <td><span class="url-tag">https://untukesok.id/programs/[id-kegiatan]</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Checkout, Metode & Rincian Biaya</td>
+          <td><span class="url-tag">https://untukesok.id/programs/[id-kegiatan]/invoice</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Modal Gateway Pembayaran</td>
+          <td><em>Midtrans Snap Modal Pop-up (via Client-Key SDK)</em></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Tiket Digital & Konfirmasi Sukses</td>
+          <td><span class="url-tag">https://untukesok.id/programs/[id-kegiatan]/invoice</span> (State Sukses)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- SECTION 3: CUSTOMER JOURNEY STEP-BY-STEP -->
+    <div class="section-title">3. Detail Customer Journey dari Buka Website hingga Pembayaran Sukses</div>
+
+    <!-- STEP 1 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">Mengakses Halaman Utama Website</div>
+        <div class="step-url">https://untukesok.id/</div>
+      </div>
+      <div class="step-desc">
+        Pengguna (calon relawan/peserta) membuka website resmi Untuk Esok, membaca profil gerakan, melihat kegiatan sorotan, dan menekan tombol CTA <strong>"Jelajahi Kegiatan Kami"</strong>.
+      </div>
+      <div class="step-box">
+        <strong>Aksi Pengguna:</strong> Klik tombol <em>"Jelajahi Kegiatan Kami"</em> atau navigasi menu <em>"Kegiatan"</em> di navbar.
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">Autentikasi Pengguna (Masuk / Daftar Akun)</div>
+        <div class="step-url">https://untukesok.id/account</div>
+      </div>
+      <div class="step-desc">
+        Untuk memastikan data kepesertaan dan tiket terverifikasi, peserta masuk menggunakan <strong>Google Sign-In</strong> atau mendaftarkan <strong>Email & Kata Sandi</strong>.
+      </div>
+      <div class="step-box">
+        <strong>Aksi Pengguna:</strong> Melakukan otentikasi akun satu kali agar data tiket terhubung ke profil relawan.
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Memilih Kegiatan di Katalog</div>
+        <div class="step-url">https://untukesok.id/programs</div>
+      </div>
+      <div class="step-desc">
+        Peserta melihat daftar program kegiatan yang tersedia (Batch 1, Batch 2, Batch 3, dll.), dapat menyaring berdasarkan kategori (*Pendidikan, Lingkungan, Kreativitas, Kesehatan*), mencari nama kegiatan, dan memfilter pengurutan.
+      </div>
+      <div class="step-box">
+        <strong>Aksi Pengguna:</strong> Memilih kartu kegiatan yang ingin diikuti untuk melihat rincian lengkap.
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">Melihat Halaman Detail Kegiatan</div>
+        <div class="step-url">https://untukesok.id/programs/[id]</div>
+      </div>
+      <div class="step-desc">
+        Halaman menampilkan detail lengkap: tanggal kegiatan, waktu WITA, lokasi, status kuota relawan (misal: <em>0/10</em>), nominal <em>Commitment Fee</em>, tugas aktivitas, dan kriteria peserta.
+      </div>
+      <div class="step-box">
+        <strong>Aksi Pengguna:</strong> Membaca kriteria kegiatan lalu menekan tombol <strong>"Daftar Jadi Relawan"</strong>.
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-title">Checkout, Pilihan Metode Bayar & Rincian Biaya</div>
+        <div class="step-url">https://untukesok.id/programs/[id]/invoice</div>
+      </div>
+      <div class="step-desc">
+        Peserta masuk ke halaman checkout <em>Commitment Fee</em>. Peserta disajikan grid pilihan metode pembayaran visual (E-Wallet & QRIS, Virtual Account BCA, Bank Lainnya, Kartu Kredit).
+      </div>
+      <div class="step-box">
+        <strong>Rincian Tagihan yang Ditampilkan:</strong>
+        <ul>
+          <li><strong>Commitment Fee:</strong> Nominal murni pendaftaran kegiatan.</li>
+          <li><strong>Biaya Layanan:</strong> Biaya transaksi payment gateway (dihitung otomatis per metode).</li>
+          <li><strong>Total Pembayaran:</strong> Penjumlahan harga pokok + biaya layanan.</li>
+        </ul>
+        <strong>Aksi Pengguna:</strong> Memilih metode pembayaran yang diinginkan dan menekan tombol <strong>"Bayar"</strong>.
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">6</div>
+        <div class="step-title">Pembayaran via Midtrans Snap Pop-up</div>
+        <div class="step-url">Snap Gateway Modal</div>
+      </div>
+      <div class="step-desc">
+        Sistem membuat token sesi pembayaran resmi via backend route <code>/api/payment/program</code> dan memunculkan pop-up interface resmi dari <strong>Midtrans Snap</strong>.
+      </div>
+      <div class="step-box">
+        <strong>Aksi Pengguna:</strong> Menyelesaikan pembayaran sesuai metode yang dipilih:
+        <ul>
+          <li><strong>QRIS / GoPay:</strong> Memindai barcode QRIS melalui aplikasi e-wallet / mobile banking.</li>
+          <li><strong>Virtual Account:</strong> Menyalin nomor VA dan mentransfer via ATM / m-Banking.</li>
+          <li><strong>Kartu Kredit / Debit:</strong> Mengisi detail kartu dan memasukkan OTP 3D Secure.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-number">7</div>
+        <div class="step-title">Konfirmasi Pembayaran Sukses & Tiket Digital</div>
+        <div class="step-url">https://untukesok.id/programs/[id]/invoice</div>
+      </div>
+      <div class="step-desc">
+        Setelah pembayaran terverifikasi oleh Midtrans, sistem otomatis mengupdate database Firestore (menambah kuota relawan terdaftar `+1` dan mencatat status kepesertaan terverifikasi).
+      </div>
+      <div class="step-box">
+        <strong>Output yang Diterima Peserta:</strong>
+        <ul>
+          <li><strong>Modal Tiket Digital (Payment Successful):</strong> Berisi Order ID unik (#PROG-...), Nama Peserta, Tanggal Kegiatan, dan Rincian Biaya.</li>
+          <li><strong>Akses Koordinasi:</strong> Tombol <strong>"GABUNG GRUP WHATSAPP"</strong> aktif untuk briefing panitia.</li>
+          <li><strong>Penyimpanan Akun:</strong> Riwayat tiket tersimpan di halaman <em>Akun Saya</em>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Dokumen ini disusun untuk keperluan kepatuhan & verifikasi operasional Midtrans Payment Gateway.<br>
+      © 2026 Untuk Esok — Hak Cipta Dilindungi.
+    </div>
+
+  </div>
+</body>
+</html>
